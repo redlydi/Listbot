@@ -1,244 +1,181 @@
-<!DOCTYPE html><html lang="ru">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ListBot</title>
+  <title>LeafCoin Clicker</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
     body {
-      background: linear-gradient(145deg, #0f3e1e, #1a5d2e);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .header {
-      padding: 20px;
-      font-size: 22px;
+      background-color: #111;
+      color: #eee;
+      font-family: Arial, sans-serif;
       text-align: center;
+      margin: 0;
     }
-    .balance {
-      text-align: center;
-      font-size: 32px;
-      margin-top: 10px;
-    }
-    .content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .leaf {
-      width: 120px;
-      height: 120px;
-      background: url('https://i.pinimg.com/originals/09/d0/f9/09d0f9d02df7681950a6ce98e9794910.jpg') no-repeat center/contain;
-      animation: float 2s infinite ease-in-out;
-      transition: transform 0.1s ease;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    .tabs {
-      display: flex;
-      justify-content: space-around;
-      background: #083b1a;
-      padding: 10px 0;
-    }
-    .tab {
-      color: white;
-      font-size: 14px;
-      text-align: center;
-      flex: 1;
-    }
-    .tab.active {
-      background: #0e5725;
-    }
-    .hidden {
-      display: none;
-    }
-    .gift-box, .shop-item {
-      margin: 10px;
+    nav {
+      background: #222;
       padding: 10px;
-      border-radius: 12px;
-      background: #1f7c3d;
-      box-shadow: 0 0 10px #2bd66d;
-      text-align: center;
     }
-    button {
-      margin-top: 10px;
-      padding: 10px;
-      background: #1db954;
+    nav button {
+      margin: 5px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 10px;
-      color: white;
-      font-weight: bold;
+      border-radius: 5px;
+      background-color: #444;
+      color: #fff;
       cursor: pointer;
     }
-    .wheel-result {
-      font-size: 18px;
-      margin-top: 10px;
+    .tab {
+      display: none;
     }
-    #wheel-img {
+    .active {
+      display: block;
+    }
+    #leaf {
       width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: conic-gradient(
-        gold 0.0003%, 
-        #1db954 0.0003% 11.5003%,
-        #3edc74 11.5003% 51.5003%,
-        #54e684 51.5003% 76.5003%,
-        #aaffbb 76.5003% 101.5003%,
-        #1db954 101.5003% 100%
-      );
-      animation: spin 0s;
+      transition: transform 0.1s ease;
+      cursor: pointer;
     }
-    @keyframes spin {
-      from { transform: rotate(0); }
-      to { transform: rotate(360deg); }
+    #leaf:active {
+      transform: scale(0.9);
+    }
+    .wheel {
+      width: 300px;
+      height: 300px;
+      border: 10px solid #555;
+      border-radius: 50%;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .segment {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      background: #666;
+      transform-origin: 100% 100%;
+      clip-path: polygon(100% 100%, 0 100%, 100% 0);
+    }
+    #spinBtn {
+      margin: 20px;
+      padding: 10px 30px;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
-  <div class="header">Ваше дерево растёт</div>
-  <div class="balance" id="balance">Листкоинов: 0</div>  <div class="content" id="clicker-tab">
-    <div class="leaf" onclick="tapLeaf()"></div>
-  </div>  <div class="content hidden" id="wheel-tab">
-    <div class="gift-box">
-      <div id="wheel-img"></div>
-      <div id="wheel-result">Прокрути колесо!</div>
-      <button onclick="spinWheel()" id="spin-button">Крутить</button>
-    </div>
-  </div>  <div class="content hidden" id="gifts-tab">
-    <div class="gift-box" id="gifts-list">Вы ещё ничего не выиграли</div>
-  </div>  <div class="content hidden" id="shop-tab">
-    <div class="shop-item">
-      <div>Автокликер (+1/сек)</div>
-      <button onclick="buyAutoClicker()">Купить за 1,000,000</button>
-    </div>
-    <div class="shop-item">
-      <div>+4 за клик</div>
-      <button onclick="buyClickPower()">Купить за 2,000,000</button>
-    </div>
-  </div>  <div class="tabs">
-    <div class="tab active" onclick="showTab('clicker')">🌿 Кликер</div>
-    <div class="tab" onclick="showTab('wheel')">🎡 Рулетка</div>
-    <div class="tab" onclick="showTab('gifts')">🎁 Подарки</div>
-    <div class="tab" onclick="showTab('shop')">🛍️ Магазин</div>
+  <h1>LeafCoin Clicker 🌿</h1>
+  <nav>
+    <button onclick="showTab('clicker')">Кликер</button>
+    <button onclick="showTab('roulette')">Рулетка</button>
+    <button onclick="showTab('inventory')">Инвентарь</button>
+    <button onclick="showTab('shop')">Магазин</button>
+  </nav>  <div id="clicker" class="tab active">
+    <h2>ЛистКоины: <span id="coins">0</span></h2>
+    <img id="leaf" src="leaf.png" onclick="clickLeaf()">
+  </div>  <div id="roulette" class="tab">
+    <h2>Рулетка</h2>
+    <div class="wheel" id="wheel"></div>
+    <button id="spinBtn" onclick="spinWheel()">Крутить</button>
+    <p>Бесплатная попытка: <span id="freeSpin"></span></p>
+  </div>  <div id="inventory" class="tab">
+    <h2>Инвентарь</h2>
+    <ul id="inventoryList"></ul>
+  </div>  <div id="shop" class="tab">
+    <h2>Магазин</h2>
+    <button onclick="buyAutoclicker()">Автокликер (1 лист/сек) — 1,000,000 листкоинов</button><br>
+    <button onclick="buyUpgrade()">Усиление клика (+4/клик) — 2,000,000 листкоинов</button>
   </div>  <script>
-    let balance = +localStorage.getItem('balance') || 0;
-    let clickPower = +localStorage.getItem('clickPower') || 1;
-    let autoClick = localStorage.getItem('autoClick') === 'true';
-    let lastFreeSpin = localStorage.getItem('lastFreeSpin') || '';
+    let coins = parseInt(localStorage.getItem('coins')) || 0;
+    let clickPower = parseInt(localStorage.getItem('clickPower')) || 1;
+    let hasAutoclicker = localStorage.getItem('autoclicker') === 'true';
+    let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+    let lastFreeSpin = localStorage.getItem('lastFreeSpin') || 0;
 
-    const balanceEl = document.getElementById('balance');
-    const giftsList = document.getElementById('gifts-list');
-    const spinButton = document.getElementById('spin-button');
-    const wheelResult = document.getElementById('wheel-result');
+    document.getElementById('coins').innerText = coins;
 
-    updateBalance();
-    checkDailySpin();
-
-    function updateBalance() {
-      balanceEl.innerText = `Листкоинов: ${balance.toLocaleString()}`;
-      localStorage.setItem('balance', balance);
+    function showTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
     }
 
-    function tapLeaf() {
-      balance += clickPower;
-      updateBalance();
+    function clickLeaf() {
+      coins += clickPower;
+      update();
     }
 
-    function buyAutoClicker() {
-      if (autoClick) return alert("Уже куплено!");
-      if (balance >= 1000000) {
-        balance -= 1000000;
-        autoClick = true;
-        localStorage.setItem('autoClick', true);
-        setInterval(() => {
-          balance += clickPower;
-          updateBalance();
-        }, 1000);
-        updateBalance();
-      } else alert("Недостаточно средств");
-    }
-
-    function buyClickPower() {
-      if (clickPower > 1) return alert("Уже куплено!");
-      if (balance >= 2000000) {
-        balance -= 2000000;
-        clickPower = 4;
-        localStorage.setItem('clickPower', clickPower);
-        updateBalance();
-      } else alert("Недостаточно средств");
-    }
-
-    function checkDailySpin() {
-      const today = new Date().toDateString();
-      if (lastFreeSpin !== today) {
-        spinButton.innerText = "Крутить (БЕСПЛАТНО)";
-        spinButton.dataset.free = "true";
-      } else {
-        spinButton.innerText = "Крутить за 100000";
-        spinButton.dataset.free = "false";
+    function buyAutoclicker() {
+      if (coins >= 1000000 && !hasAutoclicker) {
+        coins -= 1000000;
+        hasAutoclicker = true;
+        localStorage.setItem('autoclicker', 'true');
+        update();
       }
     }
 
-    function spinWheel() {
-      const isFree = spinButton.dataset.free === "true";
-      if (!isFree && balance < 100000) return alert("Недостаточно листкоинов!");
-      if (!isFree) balance -= 100000;
-
-      const random = Math.random() * 100;
-      let result;
-      if (random <= 0.0003) result = 'pepe';
-      else if (random <= 11.5003) result = 2000;
-      else if (random <= 51.5003) result = 10000;
-      else if (random <= 76.5003) result = 100000;
-      else result = 500000;
-
-      document.getElementById('wheel-img').style.animation = 'spin 1s linear';
-      setTimeout(() => {
-        document.getElementById('wheel-img').style.animation = '';
-
-        if (result === 'pepe') {
-          giftsList.innerHTML = `<img src="/mnt/data/file-S1pf5SwV41Xd6tZRidVfHm" width="100"><br>Подарок: Золотой Пепе`;
-          wheelResult.innerHTML = `Вы выиграли Золотого Пепе! ✨`;
-        } else {
-          balance += result;
-          updateBalance();
-          wheelResult.innerHTML = `Вы выиграли ${result.toLocaleString()} листкоинов!`;
-        }
-
-        if (isFree) {
-          lastFreeSpin = new Date().toDateString();
-          localStorage.setItem('lastFreeSpin', lastFreeSpin);
-          spinButton.innerText = "Крутить за 100000";
-          spinButton.dataset.free = "false";
-        }
-
-      }, 1000);
+    function buyUpgrade() {
+      if (coins >= 2000000 && clickPower === 1) {
+        coins -= 2000000;
+        clickPower = 4;
+        localStorage.setItem('clickPower', clickPower);
+        update();
+      }
     }
 
-    if (autoClick) {
+    function update() {
+      document.getElementById('coins').innerText = coins;
+      localStorage.setItem('coins', coins);
+    }
+
+    function saveInventory() {
+      localStorage.setItem('inventory', JSON.stringify(inventory));
+    }
+
+    function refreshInventory() {
+      const list = document.getElementById('inventoryList');
+      list.innerHTML = '';
+      inventory.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        list.appendChild(li);
+      });
+    }
+
+    if (hasAutoclicker) {
       setInterval(() => {
-        balance += clickPower;
-        updateBalance();
+        coins += clickPower;
+        update();
       }, 1000);
     }
 
-    function showTab(name) {
-      document.querySelectorAll('.content').forEach(e => e.classList.add('hidden'));
-      document.getElementById(`${name}-tab`).classList.remove('hidden');
-      document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
-      event.target.classList.add('active');
+    function spinWheel() {
+      const now = new Date().toDateString();
+      if (lastFreeSpin !== now) {
+        lastFreeSpin = now;
+        localStorage.setItem('lastFreeSpin', now);
+      } else if (coins >= 100000) {
+        coins -= 100000;
+      } else {
+        alert('Недостаточно коинов и нет бесплатного вращения');
+        return;
+      }
+
+      const rnd = Math.random() * 100;
+      let prize = 0;
+      if (rnd < 0.0003) {
+        prize = 'Золотой Пепе';
+        inventory.push(prize);
+        saveInventory();
+        refreshInventory();
+      } else if (rnd < 11.5003) prize = 2000;
+      else if (rnd < 51.5003) prize = 10000;
+      else if (rnd < 76.5003) prize = 100000;
+      else prize = 500000;
+
+      if (typeof prize === 'number') coins += prize;
+      update();
     }
+
+    document.getElementById('freeSpin').innerText = (new Date().toDateString() !== lastFreeSpin) ? 'Доступна' : 'Нет';
+    refreshInventory();
   </script></body>
 </html>
