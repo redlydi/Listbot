@@ -1,97 +1,127 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE html><html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🌿 Листок Tap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Листбот</title>
   <style>
     body {
       margin: 0;
-      background: radial-gradient(ellipse at center, #0a0a0a 0%, #050505 100%);
+      padding: 0;
+      background: linear-gradient(180deg, #146b3a, #1c8c4c);
       font-family: 'Segoe UI', sans-serif;
+      color: #fff;
       overflow: hidden;
-    }
+    }.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+}
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      position: relative;
-    }
+.profile-btn, .leaf-counter-box {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px 15px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    #main-leaf {
-      width: 160px;
-      height: 160px;
-      background-image: url('https://i.pinimg.com/originals/09/d0/f9/09d0f9d02df7681950a6ce98e9794910.jpg');
-      background-size: cover;
-      background-position: center;
-      border-radius: 50%;
-      box-shadow: 0 0 40px #44cc44;
-      cursor: pointer;
-      transition: transform 0.1s ease;
-    }
+.leaf-counter-box img {
+  width: 24px;
+  height: 24px;
+}
 
-    #main-leaf:active {
-      transform: scale(0.93);
-    }
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 120px);
+}
 
-    #leaf-counter {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      width: 120px;
-      min-height: 40px;
-      gap: 6px;
-    }
+#main-leaf {
+  width: 160px;
+  height: 160px;
+  background-image: url('clean_leaf.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
 
-    .small-leaf {
-      width: 20px;
-      height: 20px;
-      background-image: url('https://i.pinimg.com/originals/09/d0/f9/09d0f9d02df7681950a6ce98e9794910.jpg');
-      background-size: cover;
-      background-position: center;
-      border-radius: 5px;
-      animation: fadeIn 0.3s ease;
-    }
+#main-leaf:active {
+  transform: scale(0.9);
+}
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.7);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
+.status-text {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 500;
+}
 
-    h1 {
-      color: #55ff55;
-      text-shadow: 0 0 15px #33aa33;
-      margin-bottom: 40px;
-    }
+.buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  backdrop-filter: blur(5px);
+}
+
+.bottom-nav div {
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+}
+
   </style>
 </head>
 <body>
-
-  <div class="container">
-    <h1>🌿 Нажми на лист</h1>
-
+  <div class="top-bar">
+    <div class="profile-btn">Профиль &raquo;</div>
+    <div class="leaf-counter-box">
+      <img src="clean_leaf.png" alt="leaf" />
+      <div id="leaf-count">0</div>
+    </div>
+  </div>  <div class="main-content">
     <div id="main-leaf" onclick="tapLeaf()"></div>
+    <div class="status-text">Вы здоровы</div>
+    <div class="buttons">
+      <div class="btn">ЗАДАНИЯ &raquo;</div>
+      <div class="btn">ЛИДЕРЫ &raquo;</div>
+    </div>
+  </div>  <div class="bottom-nav">
+    <div>Главная</div>
+    <div>Задания</div>
+    <div>Рулетка</div>
+    <div>Магазин</div>
+    <div>История</div>
+  </div>  <script>
+    let count = 0;
 
-    <div id="leaf-counter"></div>
-  </div>
-
-  <script>
     function tapLeaf() {
-      const leafCounter = document.getElementById("leaf-counter");
-      const smallLeaf = document.createElement("div");
-      smallLeaf.classList.add("small-leaf");
-      leafCounter.appendChild(smallLeaf);
+      count++;
+      document.getElementById("leaf-count").innerText = count.toLocaleString('ru-RU');
     }
-  </script>
-
+  </script></body>
+</html>
