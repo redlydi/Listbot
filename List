@@ -1,127 +1,244 @@
 <!DOCTYPE html><html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Листбот</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ListBot</title>
   <style>
-    body {
+    * {
       margin: 0;
       padding: 0;
-      background: linear-gradient(180deg, #146b3a, #1c8c4c);
+      box-sizing: border-box;
       font-family: 'Segoe UI', sans-serif;
-      color: #fff;
+    }
+    body {
+      background: linear-gradient(145deg, #0f3e1e, #1a5d2e);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
       overflow: hidden;
-    }.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-}
-
-.profile-btn, .leaf-counter-box {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 10px 15px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.leaf-counter-box img {
-  width: 24px;
-  height: 24px;
-}
-
-.main-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - 120px);
-}
-
-#main-leaf {
-  width: 160px;
-  height: 160px;
-  background-image: url('clean_leaf.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-#main-leaf:active {
-  transform: scale(0.9);
-}
-
-.status-text {
-  margin-top: 20px;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.buttons {
-  display: flex;
-  gap: 15px;
-  margin-top: 30px;
-}
-
-.btn {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-size: 16px;
-  color: #fff;
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.bottom-nav {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  background: rgba(0, 0, 0, 0.1);
-  padding: 10px 0;
-  backdrop-filter: blur(5px);
-}
-
-.bottom-nav div {
-  text-align: center;
-  font-size: 14px;
-  color: #fff;
-}
-
+    }
+    .header {
+      padding: 20px;
+      font-size: 22px;
+      text-align: center;
+    }
+    .balance {
+      text-align: center;
+      font-size: 32px;
+      margin-top: 10px;
+    }
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .leaf {
+      width: 120px;
+      height: 120px;
+      background: url('https://i.pinimg.com/originals/09/d0/f9/09d0f9d02df7681950a6ce98e9794910.jpg') no-repeat center/contain;
+      animation: float 2s infinite ease-in-out;
+      transition: transform 0.1s ease;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      background: #083b1a;
+      padding: 10px 0;
+    }
+    .tab {
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      flex: 1;
+    }
+    .tab.active {
+      background: #0e5725;
+    }
+    .hidden {
+      display: none;
+    }
+    .gift-box, .shop-item {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #1f7c3d;
+      box-shadow: 0 0 10px #2bd66d;
+      text-align: center;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background: #1db954;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .wheel-result {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    #wheel-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: conic-gradient(
+        gold 0.0003%, 
+        #1db954 0.0003% 11.5003%,
+        #3edc74 11.5003% 51.5003%,
+        #54e684 51.5003% 76.5003%,
+        #aaffbb 76.5003% 101.5003%,
+        #1db954 101.5003% 100%
+      );
+      animation: spin 0s;
+    }
+    @keyframes spin {
+      from { transform: rotate(0); }
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <div class="profile-btn">Профиль &raquo;</div>
-    <div class="leaf-counter-box">
-      <img src="clean_leaf.png" alt="leaf" />
-      <div id="leaf-count">0</div>
+  <div class="header">Ваше дерево растёт</div>
+  <div class="balance" id="balance">Листкоинов: 0</div>  <div class="content" id="clicker-tab">
+    <div class="leaf" onclick="tapLeaf()"></div>
+  </div>  <div class="content hidden" id="wheel-tab">
+    <div class="gift-box">
+      <div id="wheel-img"></div>
+      <div id="wheel-result">Прокрути колесо!</div>
+      <button onclick="spinWheel()" id="spin-button">Крутить</button>
     </div>
-  </div>  <div class="main-content">
-    <div id="main-leaf" onclick="tapLeaf()"></div>
-    <div class="status-text">Вы здоровы</div>
-    <div class="buttons">
-      <div class="btn">ЗАДАНИЯ &raquo;</div>
-      <div class="btn">ЛИДЕРЫ &raquo;</div>
+  </div>  <div class="content hidden" id="gifts-tab">
+    <div class="gift-box" id="gifts-list">Вы ещё ничего не выиграли</div>
+  </div>  <div class="content hidden" id="shop-tab">
+    <div class="shop-item">
+      <div>Автокликер (+1/сек)</div>
+      <button onclick="buyAutoClicker()">Купить за 1,000,000</button>
     </div>
-  </div>  <div class="bottom-nav">
-    <div>Главная</div>
-    <div>Задания</div>
-    <div>Рулетка</div>
-    <div>Магазин</div>
-    <div>История</div>
+    <div class="shop-item">
+      <div>+4 за клик</div>
+      <button onclick="buyClickPower()">Купить за 2,000,000</button>
+    </div>
+  </div>  <div class="tabs">
+    <div class="tab active" onclick="showTab('clicker')">🌿 Кликер</div>
+    <div class="tab" onclick="showTab('wheel')">🎡 Рулетка</div>
+    <div class="tab" onclick="showTab('gifts')">🎁 Подарки</div>
+    <div class="tab" onclick="showTab('shop')">🛍️ Магазин</div>
   </div>  <script>
-    let count = 0;
+    let balance = +localStorage.getItem('balance') || 0;
+    let clickPower = +localStorage.getItem('clickPower') || 1;
+    let autoClick = localStorage.getItem('autoClick') === 'true';
+    let lastFreeSpin = localStorage.getItem('lastFreeSpin') || '';
+
+    const balanceEl = document.getElementById('balance');
+    const giftsList = document.getElementById('gifts-list');
+    const spinButton = document.getElementById('spin-button');
+    const wheelResult = document.getElementById('wheel-result');
+
+    updateBalance();
+    checkDailySpin();
+
+    function updateBalance() {
+      balanceEl.innerText = `Листкоинов: ${balance.toLocaleString()}`;
+      localStorage.setItem('balance', balance);
+    }
 
     function tapLeaf() {
-      count++;
-      document.getElementById("leaf-count").innerText = count.toLocaleString('ru-RU');
+      balance += clickPower;
+      updateBalance();
+    }
+
+    function buyAutoClicker() {
+      if (autoClick) return alert("Уже куплено!");
+      if (balance >= 1000000) {
+        balance -= 1000000;
+        autoClick = true;
+        localStorage.setItem('autoClick', true);
+        setInterval(() => {
+          balance += clickPower;
+          updateBalance();
+        }, 1000);
+        updateBalance();
+      } else alert("Недостаточно средств");
+    }
+
+    function buyClickPower() {
+      if (clickPower > 1) return alert("Уже куплено!");
+      if (balance >= 2000000) {
+        balance -= 2000000;
+        clickPower = 4;
+        localStorage.setItem('clickPower', clickPower);
+        updateBalance();
+      } else alert("Недостаточно средств");
+    }
+
+    function checkDailySpin() {
+      const today = new Date().toDateString();
+      if (lastFreeSpin !== today) {
+        spinButton.innerText = "Крутить (БЕСПЛАТНО)";
+        spinButton.dataset.free = "true";
+      } else {
+        spinButton.innerText = "Крутить за 100000";
+        spinButton.dataset.free = "false";
+      }
+    }
+
+    function spinWheel() {
+      const isFree = spinButton.dataset.free === "true";
+      if (!isFree && balance < 100000) return alert("Недостаточно листкоинов!");
+      if (!isFree) balance -= 100000;
+
+      const random = Math.random() * 100;
+      let result;
+      if (random <= 0.0003) result = 'pepe';
+      else if (random <= 11.5003) result = 2000;
+      else if (random <= 51.5003) result = 10000;
+      else if (random <= 76.5003) result = 100000;
+      else result = 500000;
+
+      document.getElementById('wheel-img').style.animation = 'spin 1s linear';
+      setTimeout(() => {
+        document.getElementById('wheel-img').style.animation = '';
+
+        if (result === 'pepe') {
+          giftsList.innerHTML = `<img src="/mnt/data/file-S1pf5SwV41Xd6tZRidVfHm" width="100"><br>Подарок: Золотой Пепе`;
+          wheelResult.innerHTML = `Вы выиграли Золотого Пепе! ✨`;
+        } else {
+          balance += result;
+          updateBalance();
+          wheelResult.innerHTML = `Вы выиграли ${result.toLocaleString()} листкоинов!`;
+        }
+
+        if (isFree) {
+          lastFreeSpin = new Date().toDateString();
+          localStorage.setItem('lastFreeSpin', lastFreeSpin);
+          spinButton.innerText = "Крутить за 100000";
+          spinButton.dataset.free = "false";
+        }
+
+      }, 1000);
+    }
+
+    if (autoClick) {
+      setInterval(() => {
+        balance += clickPower;
+        updateBalance();
+      }, 1000);
+    }
+
+    function showTab(name) {
+      document.querySelectorAll('.content').forEach(e => e.classList.add('hidden'));
+      document.getElementById(`${name}-tab`).classList.remove('hidden');
+      document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
+      event.target.classList.add('active');
     }
   </script></body>
 </html>
